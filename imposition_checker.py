@@ -3,7 +3,9 @@
 готового спуска полос схеме раскладки
 """
 import argparse
-#import pdf2image
+import tempfile
+from shutil import copyfile
+from  pdf2image import convert_from_path
 
 
 class ImpositionChecker:
@@ -25,6 +27,15 @@ class ImpositionChecker:
         Returns:
             Bool
         """
+        with tempfile.TemporaryDirectory() as path:
+            image1 = convert_from_path(file1,
+                                       output_folder=path,
+                                       fmt="jpeg",
+                                       use_cropbox=True,
+                                       grayscale=True)
+            # только для теста преобразования файла
+            for i in range(len(image1)):
+                copyfile(image1[i].filename, f"tests/images/image_{i}.jpg")
         diff = 0.8
         return diff <= self.epsilon
 
